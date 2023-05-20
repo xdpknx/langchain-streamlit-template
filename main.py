@@ -6,7 +6,10 @@ from langchain.chains import ConversationChain
 from langchain.llms import OpenAI
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
-
+from langchain.chains import LLMChain
+from langchain.chains.question_answering import load_qa_chain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
+from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 
 def load_chain():
     """Logic for loading the chain you want to use should go here."""
@@ -14,8 +17,13 @@ def load_chain():
         vectorstore = pickle.load(f)
         print(vectorstore)
         llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
-        chain = ConversationalRetrievalChain.from_llm(llm=llm,
-            retriever=vectorstore.as_retriever(), verbose=True, return_source_documents=False)
+        question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
+        doc_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
+        chain = ConversationalRetrievalChain(
+    retriever=vectorstore.as_retriever(),
+    question_generator=question_generator,
+    combine_docs_chain=doc_chain,
+)
     return chain
 
 chain = load_chain()
@@ -32,6 +40,9 @@ if "past" not in st.session_state:
 
 if "history" not in st.session_state:
     st.session_state["history"] = []
+
+if "past" not in st.session_state:
+    st.session_state["past"] = []
 
 def get_text():
     input_text = st.text_input("You: ", "Hello, how are you?", key="input")
