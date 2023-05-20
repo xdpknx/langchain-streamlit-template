@@ -18,7 +18,7 @@ def load_chain():
         print(vectorstore)
         llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
         question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
-        doc_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
+        doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
         chain = ConversationalRetrievalChain(
     retriever=vectorstore.as_retriever(),
     question_generator=question_generator,
