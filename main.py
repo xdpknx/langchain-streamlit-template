@@ -18,7 +18,7 @@ def load_chain():
     """Logic for loading the chain you want to use should go here."""
     with open("vectorstore.pkl", "rb") as f:
         vectorstore = pickle.load(f)
-        llm = OpenAI( temperature=0)
+        llm = ChatOpenAI(temperature=0)
         question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
         doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
         chain = ConversationalRetrievalChain(
