@@ -10,6 +10,8 @@ from langchain.chains import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
+from PIL import Image
+
 
 def load_chain():
     """Logic for loading the chain you want to use should go here."""
@@ -26,7 +28,7 @@ def load_chain():
 )
     return chain
 
-chain = load_chain()
+
 
 # From here down is all the StreamLit UI.
 st.set_page_config(page_title="Botswana AI Citizen", page_icon=":robot:")
@@ -45,14 +47,21 @@ if "past" not in st.session_state:
     st.session_state["past"] = []
 
 def get_text():
-    input_text = st.text_input("You: ", "Hello, how are you?", key="input")
+    input_text = st.text_input("You: ", "", key="input")
     return input_text
 
+#image = Image.open("Code-of-Arms-colour.png")
+#st.image(image, caption='Your Image', use_column_width=True)
+
+chain = load_chain()
+image_placeholder = st.empty()
 
 user_input = get_text()
 
 if user_input:
-    output = chain( {"question": user_input, "chat_history": st.session_state["history"]})
+    with st.spinner('Finding answers'):
+        output = chain( {"question": user_input, "chat_history": st.session_state["history"]})
+    st.success('Done!')
 
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output["answer"])
