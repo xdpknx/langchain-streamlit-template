@@ -6,6 +6,7 @@ from langchain.chains import ConversationChain
 from langchain.llms import OpenAI
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
 from langchain.chains import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
@@ -17,7 +18,7 @@ def load_chain():
     """Logic for loading the chain you want to use should go here."""
     with open("vectorstore.pkl", "rb") as f:
         vectorstore = pickle.load(f)
-        llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+        llm = OpenAI( temperature=0)
         question_generator = LLMChain(llm=llm, prompt=CONDENSE_QUESTION_PROMPT)
         doc_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
         chain = ConversationalRetrievalChain(
