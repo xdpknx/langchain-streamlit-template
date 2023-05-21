@@ -28,7 +28,7 @@ def load_chain():
 )
     return chain
 
-
+chain = load_chain()
 
 # From here down is all the StreamLit UI.
 st.set_page_config(page_title="Botswana AI Citizen", page_icon=":robot:")
@@ -53,7 +53,7 @@ def get_text():
 #image = Image.open("Code-of-Arms-colour.png")
 #st.image(image, caption='Your Image', use_column_width=True)
 
-chain = load_chain()
+
 image_placeholder = st.empty()
 
 user_input = get_text()
